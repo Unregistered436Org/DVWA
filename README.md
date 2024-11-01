@@ -41,10 +41,13 @@ This file is available in multiple languages:
 - Arabic: [العربية](README.ar.md)
 - Chinese: [简体中文](README.zh.md)
 - French: [Français](README.fr.md)
+- Korean: [한국어](README.ko.md)
 - Persian: [فارسی](README.fa.md)
 - Portuguese: [Português](README.pt.md)
 - Spanish: [Español](README.es.md)
 - Turkish: [Türkçe](README.tr.md)
+- Indonesia: [Indonesia](README.id.md)
+- Vietnamese: [Vietnamese](README.vi.md)
 
 If you would like to contribute a translation, please submit a PR. Note though, this does not mean just run it through Google Translate and send that in, those will be rejected. Submit your translated version by adding a new 'README.xx.md' file where xx is the two-letter code of your desired language (based on [ISO 639-1](https://en.wikipedia.org/wiki/List_of_ISO_639-1_codes)).
 
@@ -64,6 +67,45 @@ Or [download a ZIP of the files](https://github.com/digininja/DVWA/archive/maste
 
 ## Installation
 
+### Automated Installation 🛠️
+
+**Note, this is not an official DVWA script, it was written by [IamCarron](https://github.com/iamCarron/). A lot of work went into creating the script and, when it was created, it did not do anything malicious, however it is recommended you review the script before blindly running it on your system, just in case. Please report any bugs to [IamCarron](https://github.com/iamCarron/), not here.**
+
+An automated configuration script for DVWA on Debian-based machines, including Kali, Ubuntu, Kubuntu, Linux Mint, Zorin OS...
+
+**Note: This script requires root privileges and is tailored for Debian-based systems. Ensure you are running it as the root user.**
+
+#### Installation Requirements
+
+- **Operating System:** Debian-based system (Kali, Ubuntu, Kubuntu, Linux Mint, Zorin OS)
+- **Privileges:** Execute as root user
+
+#### Installation Steps
+
+##### One-Liner
+
+This will download an install script written by [@IamCarron](https://github.com/IamCarron) and run it automatically. This would not be included here if we did not trust the author and the script as it was when we reviewed it, but there is always the chance of someone going rogue, and so if you don't feel safe running someone else's code without reviewing it yourself, follow the manual process and you can review it once downloaded.
+
+```bash
+sudo bash -c "$(curl --fail --show-error --silent --location https://raw.githubusercontent.com/IamCarron/DVWA-Script/main/Install-DVWA.sh)"
+```
+
+##### Manually Running the Script
+1. **Download the script:**
+   ```bash
+   wget https://raw.githubusercontent.com/IamCarron/DVWA-Script/main/Install-DVWA.sh
+   ```
+
+2. **Make the script executable:**
+   ```bash
+   chmod +x Install-DVWA.sh
+   ```
+
+3. **Run the script as root:**
+   ```bash
+   sudo ./Install-DVWA.sh
+   ```
+
 ### Installation Videos
 
 - [Installing DVWA on Kali running in VirtualBox](https://www.youtube.com/watch?v=WkyDxNJkgQ4)
@@ -80,23 +122,11 @@ This [video](https://youtu.be/Yzksa_WjnY0) walks you through the installation pr
 
 ### Docker
 
-It is possible to run DVWA with containers.
+Thanks to [hoang-himself](https://github.com/hoang-himself) and [JGillam](https://github.com/JGillam), every commit to the `master` branch causes a Docker image to be built and ready to be pulled down from GitHub Container Registry.
 
-#### Automated Build
+For more information on what you are getting, you can browse [the prebuilt Docker images](https://github.com/digininja/DVWA/pkgs/container/dvwa).
 
-Thanks to [JGillam](https://github.com/JGillam), every commit now causes a docker image to be build ready to be pulled down from GitHub.
-
-You can pull the latest version by doing this:
-
-```
-docker pull ghcr.io/digininja/dvwa:latest
-```
-
-And for more information on what you are getting, see [here](https://github.com/digininja/DVWA/pkgs/container/dvwa).
-
-#### Manual Build
-
-If you would rather build the package manually, [hoang-himself](https://github.com/hoang-himself) did all the hard work setting all the docker stuff up to hopefully make it as easy as possible for you.
+#### Getting Started
 
 Prerequisites: Docker and Docker Compose.
 
@@ -111,7 +141,7 @@ Your Docker data (containers, images, volumes, etc.) should not be affected, but
 
 Then, to get started:
 
-1. Run `docker version` and `docker compose version` to see if you have Docker and Docker Compose properly installed. You should be able to see the version of Docker in the output.
+1. Run `docker version` and `docker compose version` to see if you have Docker and Docker Compose properly installed. You should be able to see their versions in the output.
 
     For example:
 
@@ -135,13 +165,30 @@ Then, to get started:
     If you don't see anything or get a command not found error, follow the prerequisites to setup Docker and Docker Compose.
 
 2. Clone or download this repository and extract (see [Download](#download)).
-3. Open a terminal of your choice and change its working directory to `DVWA`.
-4. `docker compose up -d`.
+3. Open a terminal of your choice and change its working directory into this folder (`DVWA`).
+4. Run `docker compose up -d`.
 
 DVWA is now available at `http://localhost:4280`.
 
 **Notice that for running DVWA in containers, the web server is listening on port 4280 instead of the usual port of 80.**
 For more information on this decision, see [I want to run DVWA on a different port](#i-want-to-run-dvwa-on-a-different-port).
+
+#### Local Build
+
+If you made local changes and want to build the project from local, go to `compose.yml` and change `pull_policy: always` to `pull_policy: build`.
+
+Running `docker compose up -d` should trigger Docker to build an image from local regardless of what is available in the registry.
+
+See also: [`pull_policy`](https://github.com/compose-spec/compose-spec/blob/master/05-services.md#pull_policy
+).
+
+### PHP Versions
+
+Ideally you should be using the latest stable version of PHP as that is the version that this app will be developed and tested on.
+
+Support will not be given for anyone trying to use PHP 5.x.
+
+Versions less than 7.3 have known issues that will cause problems, most of the app will work, but random things may not. Unless you have a very good reason for using such an old version, support will not be given.
 
 ### Linux Packages
 
@@ -193,17 +240,17 @@ $_DVWA[ 'db_database' ] = 'dvwa';
 
 Note, if you are using MariaDB rather than MySQL (MariaDB is default in Kali), then you can't use the database root user, you must create a new database user. To do this, connect to the database as the root user then use the following commands:
 
-```mysql
-mysql> create database dvwa;
+```mariadb
+MariaDB [(none)]> create database dvwa;
 Query OK, 1 row affected (0.00 sec)
 
-mysql> create user dvwa@localhost identified by 'p@ssw0rd';
+MariaDB [(none)]> create user dvwa@localhost identified by 'p@ssw0rd';
 Query OK, 0 rows affected (0.01 sec)
 
-mysql> grant all on dvwa.* to dvwa@localhost;
+MariaDB [(none)]> grant all on dvwa.* to dvwa@localhost;
 Query OK, 0 rows affected (0.01 sec)
 
-mysql> flush privileges;
+MariaDB [(none)]> flush privileges;
 Query OK, 0 rows affected (0.00 sec)
 ```
 
@@ -307,17 +354,23 @@ For example, you can change
 
 ```yml
 ports:
-  - 4280:80
+  - 127.0.0.1:4280:80
 ```
 
 to
 
 ```yml
 ports:
-  - 8806:80
+  - 127.0.0.1:8806:80
 ```
 
 DVWA is now accessible at `http://localhost:8806`.
+
+In cases in which you want DVWA to not only be accessible exclusively from your own device, but
+on your local network too (e.g. because you are setting up a test machine for a workshop), you
+can remove the `127.0.0.1:` from the port mapping (or replace it with you LAN IP). This way it
+will listen on all available device. The safe default should always be to only listen on your
+local loopback device. After all, it is a damn vulnerable web application, running on your machine.
 
 #### DVWA auto starts when Docker runs
 
@@ -423,6 +476,46 @@ This is not an authentication issue but tells you that the database server is no
 ```sh
 sudo service mysql start
 ```
+
+### Connection Refused
+
+An error similar to this one:
+
+```
+Fatal error: Uncaught mysqli_sql_exception: Connection refused in /var/sites/dvwa/non-secure/htdocs/dvwa/includes/dvwaPage.inc.php:535
+```
+
+Means your database server is not running or you've got the wrong IP address in the config file.
+
+Check this line in the config file to see where the database server is expected to be:
+
+```
+$_DVWA[ 'db_server' ]   = '127.0.0.1';
+```
+
+Then go to this server and check that it is running. In Linux this can be done with:
+
+```
+systemctl status mariadb.service
+```
+
+And you are looking for something like this, the important bit is that it says `active (running)`.
+
+```
+● mariadb.service - MariaDB 10.5.19 database server
+     Loaded: loaded (/lib/systemd/system/mariadb.service; enabled; preset: enabled)
+     Active: active (running) since Thu 2024-03-14 16:04:25 GMT; 1 week 5 days ago
+```
+
+If it is not running, you can start it with:
+
+```
+sudo systemctl stop mariadb.service 
+```
+
+Note the `sudo` and make sure you put your Linux user password in if requested.
+
+In Windows, check the status in the XAMPP console.
 
 ### Unknown authentication method
 
