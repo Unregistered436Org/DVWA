@@ -80,7 +80,7 @@ print "\n";
 
 $hacked_deciphered = decrypt($c, $key);
 print "Decrypted after swapping blocks around:\n";
-var_dump ($hacked_deciphered);
+
 $user = json_decode ($hacked_deciphered);
 if ($user === null) {
 	throw new Exception ("Could not decode JSON object.");
